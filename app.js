@@ -1,90 +1,34 @@
-const fs = require('fs');
 const express = require('express');
+const morgan = require('morgan');
+
+const tourRouter = require('./routes/tourRouters');
+const userRouter = require('./routes/userRouters');
 
 const app = express();
 
+// MIDDELWARE
+if (process.env.NODE_ENV === 'development') {
+    app.use(morgan('dev'));
+}
+
 app.use(express.json());
+// app.use(express.static(`${__dirname}/public`, { index: 'home.html' }));
+app.use(express.static(`${__dirname}/public`));
 
-const tours = JSON.parse(fs.readFileSync(`${__dirname}/data/tours-simple.json`));
-
-app.get('/api/v1/tours', (req, res) => {
-    res.status(200).json({
-        status: 'success',
-        result: tours.length,
-        data: {
-            tours,
-        },
-    });
+app.use((req, res, next) => {
+    console.log('Hello from the middleware ✋');
+    next();
 });
 
-app.get('/api/v1/tours/:id', (req, res) => {
-    const id = req.params.id * 1;
-    const tour = tours.find((el) => el.id === id);
-
-    if (!tour) {
-        res.status(404).json({
-            status: 'fail',
-            message: 'Can not fint the tour!',
-        });
-    }
-
-    res.status(200).json({
-        status: 'success',
-        data: {
-            tour,
-        },
-    });
+app.use((req, res, next) => {
+    req.requestTime = new Date().toISOString();
+    console.log(req.requestTime);
+    next();
 });
 
-app.post('/api/v1/tours', (req, res) => {
-    const newId = tours[tours.length - 1].id + 1;
-    const newTour = { id: newId, ...req.body };
-    // const newTour = { id: newId, ...req.body };
+// ROUTES
+app.use('/api/v1/tours', tourRouter);
+app.use('/api/v1/users', userRouter);
 
-    tours.push(newTour);
-    fs.readFile(`${__dirname}/data/tours-simple.json`, 'utf8', () => {
-        res.status(201).json({
-            status: 'success',
-            data: {
-                tour: newTour,
-            },
-        });
-    });
-});
-
-app.patch('/api/v1/tours/:id', (req, res) => {
-    if (req.params.id * 1 > tours.length) {
-        res.status(404).json({
-            status: 'fail',
-            message: 'Can not fint the tour For update!',
-        });
-    }
-
-    res.status(200).json({
-        status: 'success',
-        data: {
-            message: 'tour updated',
-        },
-    });
-});
-
-app.delete('/api/v1/tours/:id', (req, res) => {
-    // console.log(req.params.id, tours.length);
-
-    if (req.params.id * 1 > tours.length) {
-        res.status(404).json({
-            status: 'fail',
-            message: 'Can not fint the tour for DELETE!',
-        });
-    }
-
-    res.status(200).json({
-        status: 'success',
-        data: null,
-    });
-});
-
-const port = 3000;
-app.listen(port, () => {
-    console.log(`Server is running on post ${port}....`);
-});
+// START SERVER
+module.exports = app;
