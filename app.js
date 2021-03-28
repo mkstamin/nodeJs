@@ -1,16 +1,34 @@
 const express = require('express');
+const morgan = require('morgan');
+
+const tourRouter = require('./routes/tourRouters');
+const userRouter = require('./routes/userRouters');
 
 const app = express();
 
-app.get('/', (req, res) => {
-    res.status(200).json({ message: 'Hello from the server side', app: 'my app' });
+// MIDDELWARE
+if (process.env.NODE_ENV === 'development') {
+    app.use(morgan('dev'));
+}
+
+app.use(express.json());
+// app.use(express.static(`${__dirname}/public`, { index: 'home.html' }));
+app.use(express.static(`${__dirname}/public`));
+
+app.use((req, res, next) => {
+    console.log('Hello from the middleware ✋');
+    next();
 });
 
-app.get('/', (req, res) => {
-    res.send('HELLO FROM THE POST ROUTE');
+app.use((req, res, next) => {
+    req.requestTime = new Date().toISOString();
+    console.log(req.requestTime);
+    next();
 });
 
-const port = 3000;
-app.listen(port, () => {
-    console.log(`Server is running on post ${port}....`);
-});
+// ROUTES
+app.use('/api/v1/tours', tourRouter);
+app.use('/api/v1/users', userRouter);
+
+// START SERVER
+module.exports = app;
