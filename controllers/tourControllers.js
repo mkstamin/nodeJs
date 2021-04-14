@@ -29,7 +29,7 @@ exports.getAllTours = catchAsync(async (req, res, next) => {
         },
     });
 
-    next();
+    // next();
 });
 
 exports.getTour = catchAsync(async (req, res, next) => {
@@ -57,7 +57,7 @@ exports.createTour = catchAsync(async (req, res, next) => {
         },
     });
 
-    next();
+    // next();
 });
 
 exports.updateTour = catchAsync(async (req, res, next) => {
@@ -120,7 +120,7 @@ exports.getTourStats = catchAsync(async (req, res, next) => {
         },
     });
 
-    next();
+    // next();
 });
 
 exports.getMonthlyPlan = catchAsync(async (req, res, next) => {
@@ -167,5 +167,5 @@ exports.getMonthlyPlan = catchAsync(async (req, res, next) => {
         },
     });
 
-    next();
+    // next();
 });
