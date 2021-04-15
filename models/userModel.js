@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
 
-const useSchema = new mongoose.Schema({
+const userSchema = new mongoose.Schema({
     name: {
         type: String,
         required: [true, 'Please tell us your name!'],
@@ -40,10 +40,15 @@ const useSchema = new mongoose.Schema({
     },
     passwordChangedAt: Date,
     passwordResetToken: String,
-    passwordResetExperies: Date,
+    passwordResetExpires: Date,
+    active: {
+        type: Boolean,
+        default: true,
+        select: false,
+    },
 });
 
-useSchema.pre('save', async function (next) {
+userSchema.pre('save', async function (next) {
     // Only work when the password is modifies
     if (!this.isModified('password')) return next();
     // password was hash with bcrypt
@@ -55,12 +60,27 @@ useSchema.pre('save', async function (next) {
     next();
 });
 
-useSchema.methods.correctPassword = async function (candidatePassword, userPassword) {
+userSchema.pre('save', function (next) {
+    if (!this.isModified('password') || this.isNew) return next();
+
+    /* অনেক সময় passwordChangedAt ,
+    token create এর আগে হইতে পারে এই জন্য -২০০০মিলি সেকেন্ড করে হয়েছে */
+
+    this.passwordChangedAt = Date.now() - 2000;
+    next();
+});
+
+userSchema.pre(/^find/, function (next) {
+    this.find({ active: { $ne: false } });
+    next();
+});
+
+userSchema.methods.correctPassword = async function (candidatePassword, userPassword) {
     const correct = await bcrypt.compare(candidatePassword, userPassword);
     return correct;
 };
 
-useSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
+userSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
     if (this.passwordChangedAt) {
         const changedTimestamp = (this.passwordChangedAt.getTime() / 1000) * 1;
 
@@ -72,18 +92,18 @@ useSchema.methods.changedPasswordAfter = function (JWTTimestamp) {
     return false;
 };
 
-useSchema.methods.createPasswordResetToken = function () {
+userSchema.methods.createPasswordResetToken = function () {
     const resetToken = crypto.randomBytes(32).toString('hex');
 
     this.passwordResetToken = crypto.createHash('sha256').update(resetToken).digest('hex');
 
     console.log({ resetToken }, this.passwordResetToken);
 
-    this.passwordResetExperies = Date.now() + 10 * 60 * 1000;
+    this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
 
     return resetToken;
 };
 
-const User = mongoose.model('User', useSchema);
+const User = mongoose.model('User', userSchema);
 
 module.exports = User;
