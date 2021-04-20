@@ -10,13 +10,14 @@ const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
 const tourRouter = require('./routes/tourRouters');
 const userRouter = require('./routes/userRouters');
+const reviewRouter = require('./routes/reviewRouters');
 
 const app = express();
 
 // GLOBAL MIDDELWARE
 
 // Set security HTTP headers
-app.use(helmet);
+app.use(helmet());
 
 // development login
 if (process.env.NODE_ENV === 'development') {
@@ -59,6 +60,7 @@ app.use((req, res, next) => {
 // ROUTES
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
+app.use('/api/v1/reviews', reviewRouter);
 
 // For all the Routes
 app.all('*', (req, res, next) => {

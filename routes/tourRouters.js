@@ -11,7 +11,12 @@ const {
     deleteTour,
 } = require('../controllers/tourControllers');
 
+const reviewRouter = require('./reviewRouters');
+
 const router = express.Router();
+
+// marge review router
+router.use('/:tourId/reviews', reviewRouter);
 
 router.route('/top-5-cheap').get(aliseTopCheap, getAllTours);
 
@@ -24,5 +29,4 @@ router
     .get(getTour)
     .patch(updateTour)
     .delete(protect, restricTo('admin', 'lead-guide'), deleteTour);
-
 module.exports = router;

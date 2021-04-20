@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
+// const User = require('./userModel');
 
 // Create a Tour schema
 const tourSchema = new mongoose.Schema(
@@ -80,6 +81,38 @@ const tourSchema = new mongoose.Schema(
             type: Boolean,
             default: false,
         },
+        startLocation: {
+            // GeoJSON
+            type: {
+                type: String,
+                default: 'Point',
+                enum: ['Point'],
+            },
+            coordinates: [Number],
+            address: String,
+            description: String,
+        },
+        locations: [
+            {
+                // GeoJSON
+                type: {
+                    type: String,
+                    default: 'Point',
+                    enum: ['Point'],
+                },
+                coordinates: [Number],
+                address: String,
+                description: String,
+                day: Number,
+            },
+        ],
+        guides: [
+            {
+                // @FIXME:need to discuse
+                type: mongoose.Schema.ObjectId,
+                ref: 'User',
+            },
+        ],
     },
     {
         toJSON: { virtuals: true },
@@ -91,25 +124,18 @@ tourSchema.virtual('durationWeeks').get(function () {
     return this.duration / 7;
 });
 
+// virtual populate
+tourSchema.virtual('reviews', {
+    ref: 'Review',
+    foreignField: 'tour',
+    localField: '_id',
+});
+
 // This is document middleware it's only worke to .save() and .create() data
 tourSchema.pre('save', function (next) {
     this.slug = slugify(this.name, { lower: true });
     next();
 });
-
-/*
-tourSchema.pre('save', (next) => {
-    console.log('hello from the pre save middleware');
-    next();
-});
-*/
-
-/*
-tourSchema.post('save', (doc, next) => {
-    console.log(doc);
-    next();
-});
-*/
 
 // QUERRY middleware
 tourSchema.pre(/^find/, function (next) {
@@ -118,6 +144,16 @@ tourSchema.pre(/^find/, function (next) {
     this.start = Date.now();
     next();
 });
+
+// @TODO:Poputate for all /^find/ query
+/* tourSchema.pre(/^find/, function (next) {
+    this.populate({
+        path: 'guides',
+        select: '-__v -passwordChangedAt',
+    });
+
+    next();
+}); */
 
 tourSchema.post(/^find/, function (doc, next) {
     console.log(`Query takes- ${Date.now() - this.start} ms`);
