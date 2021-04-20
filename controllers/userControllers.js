@@ -11,24 +11,9 @@ const filterObj = (obj, ...allowedFields) => {
     return newObj;
 };
 
-exports.getAllUsers = catchAsync(async (req, res, next) => {
-    const user = await User.find();
-
-    // send response
-    res.status(200).json({
-        status: 'success',
-        result: user.length,
-        data: {
-            user,
-        },
-    });
-});
-
-exports.createUser = (req, res) => {
-    res.status(500).json({
-        status: 'error',
-        message: 'This route is not yet defined!',
-    });
+exports.getMe = (req, res, next) => {
+    req.params.id = req.user.id;
+    next();
 };
 
 exports.updateMe = catchAsync(async (req, res, next) => {
@@ -66,16 +51,15 @@ exports.deleteMe = catchAsync(async (req, res, next) => {
     });
 });
 
-exports.getUser = (req, res) => {
+exports.createUser = (req, res) => {
     res.status(500).json({
         status: 'error',
-        message: 'This route is not yet defined!',
+        message: 'This route is not yet defined! Please /signup instead.',
     });
 };
-exports.updateUser = (req, res) => {
-    res.status(500).json({
-        status: 'error',
-        message: 'This route is not yet defined!',
-    });
-};
+
+exports.getAllUsers = factory.getAll(User);
+exports.getUser = factory.getOne(User);
+// Do not update with this
+exports.updateUser = factory.updateOne(User);
 exports.deleteUser = factory.deleteOne(User);
