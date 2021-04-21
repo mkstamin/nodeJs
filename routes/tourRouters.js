@@ -9,6 +9,7 @@ const {
     getTour,
     updateTour,
     deleteTour,
+    getToursWithin,
 } = require('../controllers/tourControllers');
 
 const reviewRouter = require('./reviewRouters');
@@ -25,6 +26,8 @@ router
     .get(protect, restricTo('admin', 'lead-guide', 'guide'), getMonthlyPlan);
 
 router.route('/').get(getAllTours).post(protect, restricTo('admin', 'lead-guide'), createTour);
+
+router.route('/tours-within/:distance/center/:latlng/unit/:unit').get(getToursWithin);
 
 router
     .route('/:id')
