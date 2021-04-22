@@ -166,11 +166,11 @@ tourSchema.post(/^find/, function (doc, next) {
 });
 
 // Aggregation middleware
-tourSchema.pre('aggregate', function (next) {
-    this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
-    // console.log(this.pipeline());
-    next();
-});
+// tourSchema.pre('aggregate', function (next) {
+//     this.pipeline().unshift({ $match: { secretTour: { $ne: true } } });
+//     // console.log(this.pipeline());
+//     next();
+// });
 
 // Create a Tour model
 const Tour = mongoose.model('Tour', tourSchema);

@@ -10,6 +10,7 @@ const {
     updateTour,
     deleteTour,
     getToursWithin,
+    getDistances,
 } = require('../controllers/tourControllers');
 
 const reviewRouter = require('./reviewRouters');
@@ -28,6 +29,7 @@ router
 router.route('/').get(getAllTours).post(protect, restricTo('admin', 'lead-guide'), createTour);
 
 router.route('/tours-within/:distance/center/:latlng/unit/:unit').get(getToursWithin);
+router.route('/distances/:latlng/unit/:unit').get(getDistances);
 
 router
     .route('/:id')
