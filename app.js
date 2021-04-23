@@ -1,3 +1,4 @@
+const path = require('path');
 const express = require('express');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
@@ -14,7 +15,13 @@ const reviewRouter = require('./routes/reviewRouters');
 
 const app = express();
 
+app.set('view engine', 'pug');
+app.set('views', path.join(__dirname, 'views'));
+
 // GLOBAL MIDDELWARE
+
+// serving static files
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Set security HTTP headers
 app.use(helmet());
@@ -29,6 +36,7 @@ const limiter = rateLimit({
     windowMs: 60 * 60 * 1000,
     message: 'Too many requet from this IP, please try in an hour!',
 });
+
 app.use('/api', limiter);
 
 // body parser
@@ -47,14 +55,18 @@ app.use(
     })
 );
 
-// serving static files
-app.use(express.static(`${__dirname}/public`));
-
 // Test middleware
 app.use((req, res, next) => {
     req.requestTime = new Date().toISOString();
     console.log(req.requestTime);
     next();
+});
+
+app.get('/', (req, res) => {
+    res.status(200).render('base', {
+        tour: 'First Tour For All',
+        user: 'Tamin',
+    });
 });
 
 // ROUTES
