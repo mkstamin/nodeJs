@@ -151,14 +151,14 @@ tourSchema.pre(/^find/, function (next) {
 });
 
 // @TODO:Poputate for all /^find/ query
-/* tourSchema.pre(/^find/, function (next) {
-    this.populate({
-        path: 'guides',
-        select: '-__v -passwordChangedAt',
-    });
+// tourSchema.pre(/^find/, function (next) {
+//     this.populate({
+//         path: 'guides',
+//         select: '-__v -passwordChangedAt',
+//     });
 
-    next();
-}); */
+//     next();
+// });
 
 tourSchema.post(/^find/, function (doc, next) {
     console.log(`Query takes- ${Date.now() - this.start} ms`);
