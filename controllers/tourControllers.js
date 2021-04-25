@@ -12,6 +12,7 @@ exports.aliseTopCheap = (req, res, next) => {
 exports.createTour = factory.createOne(Tour);
 exports.getAllTours = factory.getAll(Tour);
 exports.getTour = factory.getOne(Tour, {
+    // @TODO: why we use guides here
     path: 'guides reviews',
     select: '-__v -passwordChangedAt',
 });
