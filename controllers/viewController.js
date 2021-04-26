@@ -24,10 +24,14 @@ exports.getTour = catchAsync(async (req, res) => {
             select: 'name photo role',
         });
 
-    console.log(tour.reviews[0].user.name);
-
     res.status(200).render('tour', {
         taitle: tour.name,
         tour,
+    });
+});
+
+exports.getLoginForm = catchAsync(async (req, res) => {
+    res.status(200).render('login', {
+        taitle: 'Log into your account',
     });
 });

@@ -1,14 +1,15 @@
 doctype html
 html(lang="en")
     head
-        title Natours | #{taitle}
-        meta(charset="UTF-8")
-        meta(http-equiv="X-UA-Compatible", content="IE=edge")
-        meta(name="viewport", content="width=device-width, initial-scale=1.0")
-        link(rel="stylesheet", href="/css/style.css")
-        link(rel="shortcut icon", href="/img/favicon.png", type="image/png")
-        link(rel="stylesheet", href="https://fonts.googleapis.com/css?family=Lato:300,300i,700")
+        block head
+            title Natours | #{taitle}
+            meta(charset="UTF-8")
+            meta(name="viewport", content="width=device-width, initial-scale=1.0")
 
+            link(rel="stylesheet", href="/css/style.css")
+            link(rel="shortcut icon", href="/img/favicon.png", type="image/png")
+            link(rel="stylesheet", href="https://fonts.googleapis.com/css?family=Lato:300,300i,700")
+            
     body 
 
         //- Header
@@ -22,3 +23,8 @@ html(lang="en")
 
         //- Footer
         include _footer
+
+        
+        script(src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js") 
+        script(src="/js/_mapbox.js") 
+        script(src="/js/_login.js") 
