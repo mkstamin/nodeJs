@@ -740,6 +740,12 @@ body {
   transform: translate(15%, -50%) scale(0.94);
   z-index: 8;
 }
+
+.cta__img--3 {
+  -webkit-transform: translate(15%, -50%) scale(0.91);
+  transform: translate(40%, -50%) scale(0.91);
+  z-index: 7;
+}
 .cta__content {
   display: grid;
   grid-template-rows: auto auto;
