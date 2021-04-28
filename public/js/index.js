@@ -1,6 +1,6 @@
 /* eslint-disable*/
 import '@babel/polyfill';
-import { updateData } from './updateSetting';
+import { updateSettings } from './updateSetting';
 import { login, logout } from './_login';
 import { displayMap } from './_mapbox';
 
@@ -8,13 +8,17 @@ import { displayMap } from './_mapbox';
 const mapBox = document.getElementById('map');
 const loginForm = document.querySelector('.form--login')
 const userDataForm = document.querySelector('.form-user-data')
+const userPasswordForm = document.querySelector('.form-user-password')
 const louOutBtn = document.querySelector('.nav__el--logout')
+const btnSavePassword = document.querySelector('.btn-save-password')
 
 //Delegation'
 if (mapBox) {
     const locations = JSON.parse(mapBox.dataset.locations);
     displayMap(locations)
 }
+
+// @TODO: challenge to make it more useable
 
 if (loginForm) {
     loginForm.addEventListener('submit', (e) => {
@@ -37,6 +41,27 @@ if(userDataForm){
         const name = document.getElementById('name').value;
         const email = document.getElementById('email').value;
         
-        updateData(name, email);
+        updateSettings({name, email}, 'data');
+    });  
+}
+
+if(userPasswordForm){
+    userPasswordForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        btnSavePassword.textContent = 'Updating....';
+
+        const passwordCurrent = document.getElementById('password-current').value;
+        const password = document.getElementById('password').value;
+        const passwordConfirm = document.getElementById('password-confirm').value;
+        
+        await updateSettings({passwordCurrent, password, passwordConfirm}, 'password');
+
+        btnSavePassword.textContent = 'Save password';
+
+        document.getElementById('password-current').value='';
+        document.getElementById('password').value='';
+        document.getElementById('password-confirm').value='';
+
     });  
 }
