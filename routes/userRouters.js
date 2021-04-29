@@ -8,6 +8,8 @@ const {
     updateMe,
     deleteMe,
     getMe,
+    uploadUserPhoto,
+    resizeUserPhoto,
 } = require('../controllers/userControllers');
 const {
     protect,
@@ -33,7 +35,7 @@ router.use(protect);
 
 router.patch('/updateMyPassword', updatePassword);
 router.get('/me', getMe, getUser);
-router.patch('/updateMe', updateMe);
+router.patch('/updateMe', uploadUserPhoto, resizeUserPhoto, updateMe);
 router.delete('/deleteMe', deleteMe);
 
 // Restrict all routers after this middleware for admin
