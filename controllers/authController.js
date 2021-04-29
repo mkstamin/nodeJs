@@ -75,43 +75,44 @@ exports.logout = (req, res) => {
     res.status(200).json({ status: 'success' });
 };
 
-exports.protect = async (req, res, next) => {
-    try {
-        // Get the the  token if it is exists
-        let token;
-        if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
-            [, token] = req.headers.authorization.split(' ');
-        } else if (req.cookies.jwt) {
-            token = req.cookies.jwt;
-        }
-
-        if (!token) {
-            return next(new AppError('You are not logged in!! Please log in to get access', 401));
-        }
-        // verification token
-
-        const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-
-        // Check if user still exists
-        const currentUser = await User.findById(decoded.id);
-
-        if (!currentUser) {
-            return next(new AppError('The user belonging to this token is no longor exist', 401));
-        }
-        // Check if user changed password after the token was issued
-        if (currentUser.changedPasswordAfter(decoded.iat)) {
-            return next(new AppError('User recently changed password! Please log in again.', 401));
-        }
-
-        // geant access to protected route
-        req.user = currentUser;
-        res.locals.user = currentUser;
-
-        return next();
-    } catch (err) {
-        return next();
+exports.protect = catchAsync(async (req, res, next) => {
+    // try {
+    // Get the the  token if it is exists
+    let token;
+    if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
+        [, token] = req.headers.authorization.split(' ');
+    } else if (req.cookies.jwt) {
+        token = req.cookies.jwt;
     }
-};
+
+    if (!token) {
+        return next(new AppError('You are not logged in!! Please log in to get access', 401));
+    }
+    // verification token
+
+    const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+
+    // Check if user still exists
+    const currentUser = await User.findById(decoded.id);
+
+    if (!currentUser) {
+        return next(new AppError('The user belonging to this token is no longor exist', 401));
+    }
+    // Check if user changed password after the token was issued
+    if (currentUser.changedPasswordAfter(decoded.iat)) {
+        return next(new AppError('User recently changed password! Please log in again.', 401));
+    }
+
+    // geant access to protected route
+    req.user = currentUser;
+    res.locals.user = currentUser;
+
+    next();
+    //     return next();
+    // } catch (err) {
+    //     return next();
+    // }
+});
 
 exports.isLogedIn = async (req, res, next) => {
     if (req.cookies.jwt) {
