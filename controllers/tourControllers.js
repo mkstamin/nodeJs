@@ -1,7 +1,60 @@
+const multer = require('multer');
+const sharp = require('sharp');
 const Tour = require('../models/tourModel');
 const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
 const factory = require('./handlerFactory');
+
+const multerStorage = multer.memoryStorage(); // create a buffer
+
+const multerFilter = (req, file, cb) => {
+    if (file.mimetype.startsWith('image')) {
+        cb(null, true);
+    } else {
+        cb(new AppError('Not an image! Please upload only image.', 400), false);
+    }
+};
+
+const upload = multer({
+    storage: multerStorage,
+    fileFilter: multerFilter,
+});
+
+exports.uploadTourImages = upload.fields([
+    { name: 'imageCover', maxCount: 1 },
+    { name: 'images', maxCount: 3 },
+]);
+
+exports.resizeTourImages = catchAsync(async (req, res, next) => {
+    console.log(req.files);
+
+    if (!req.files.imageCover || !req.files.images) return next();
+
+    const imageCoverFileName = `tour-${req.params.id}-${Date.now()}-cover.jpeg`;
+    await sharp(req.files.imageCover[0].buffer)
+        .resize(2000, 1333)
+        .toFormat('jpeg')
+        .jpeg({ quality: 90 })
+        .toFile(`public/img/tours/${imageCoverFileName}`);
+
+    req.body.imageCover = imageCoverFileName;
+
+    req.body.images = [];
+    await Promise.all(
+        req.files.images.map(async (file, i) => {
+            const filename = `tour-${req.params.id}-${Date.now()}-${i + 1}.jpeg`;
+            await sharp(file.buffer)
+                .resize(2000, 1333)
+                .toFormat('jpeg')
+                .jpeg({ quality: 90 })
+                .toFile(`public/img/tours/${filename}`);
+
+            req.body.images.push(filename);
+        })
+    );
+
+    next();
+});
 
 exports.aliseTopCheap = (req, res, next) => {
     req.query.limit = '5';
@@ -16,7 +69,7 @@ exports.getTour = factory.getOne(Tour, {
     path: 'guides reviews',
     select: '-__v -passwordChangedAt',
 });
-exports.updateTour = factory.deleteOne(Tour);
+exports.updateTour = factory.updateOne(Tour);
 exports.deleteTour = factory.deleteOne(Tour);
 
 exports.getTourStats = catchAsync(async (req, res, next) => {
