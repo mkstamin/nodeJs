@@ -1,0 +1,24 @@
+Dicusstion
+-------------
+1.APIFFatures Class
+    ->filter
+    ->sort
+    ->limitFields
+    ->paginate
+
+2.DataBase connection using mongoos
+
+3.Import dev data to mongoDB DataBase using nodejs fs module
+    ->Import
+    ->Delete
+
+4.Models and Schema 
+
+5.Different types of middleware
+    ->pre save middleware 
+    ->post save middleware 
+    ->QUERRY middleware 
+    ->Aggregation middleware
+
+6.Aggregation Pipeline  
+
