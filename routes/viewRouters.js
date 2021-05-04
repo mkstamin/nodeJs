@@ -15,6 +15,7 @@ const router = express.Router();
 router.get('/', createBookingCheckout, isLogedIn, getOveviews);
 router.get('/tour/:slug', isLogedIn, getTour);
 router.get('/login', isLogedIn, getLoginForm);
+
 router.get('/me', protect, getAccount);
 router.get('/my-tours', protect, getMyTours);
 
