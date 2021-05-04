@@ -1,0 +1,41 @@
+Lessons
+--------------------
+
+2.What is Express
+3.Installing Postman
+4.Setting up Express and Basic Routing
+5.APIs and RESTful API Design
+6. Starting Our Api Handling Get Requests-1
+7.Handling POST Requests
+8.Responding to URL Parameters
+9.Handling PATCH Requests
+10.Handling DELETE Requests
+11.Refactoring Our Routes
+12.Middleware and the Request-Response Cycle
+13.Creating Our Own Middleware
+14.Using 3rd-Party Middleware
+15.Implementing the Users Routes
+16.Creating and Mounting Multiple Routers
+17.A Better File Structure
+18 Param Middleware
+19.Chaining Multiple Middleware Functions
+20.Serving Static Files
+21. Environment Variables
+22.Setting up ESLint + Prettier in VS Code
+
+
+
+
+Discusstion
+------------------
+
+app.use(express.json());
+app.use(express.static(`${__dirname}/public`));
+
+const app = require('./app');
+	কেন app টা require করা হয়েছে? এখানে তো আরো একটা app নেয়া যেত।
+
+router.param('id', checkId);
+
+
+Route Handling
