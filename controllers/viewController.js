@@ -37,9 +37,15 @@ exports.getTour = catchAsync(async (req, res, next) => {
     });
 });
 
-exports.getLoginForm = async (req, res) => {
+exports.getLoginForm = (req, res) => {
     res.status(200).render('login', {
         taitle: 'Log into your account',
+    });
+};
+
+exports.signUpForm = (req, res) => {
+    res.status(200).render('signup', {
+        taitle: 'Create an account',
     });
 };
 
@@ -58,6 +64,7 @@ exports.getMyTours = catchAsync(async (req, res, next) => {
 
     res.status(200).render('overview', {
         taitle: 'My tours',
+        isBookingTours: true,
         tours,
     });
 });
