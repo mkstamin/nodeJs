@@ -1,5 +1,6 @@
 /* eslint-disable*/
 import '@babel/polyfill';
+import { signup } from './signup';
 import { updateSettings } from './updateSetting';
 import { login, logout } from './_login';
 import { displayMap } from './_mapbox';
@@ -8,6 +9,7 @@ import { bookTour } from './_stripe';
 //DOM elements
 const mapBox = document.getElementById('map');
 const loginForm = document.querySelector('.form--login')
+const singupForm = document.getElementById('signup-form')
 const userDataForm = document.querySelector('.form-user-data')
 const userPasswordForm = document.querySelector('.form-user-password')
 const louOutBtn = document.querySelector('.nav__el--logout')
@@ -18,6 +20,26 @@ const bookBtn = document.getElementById('book-btn')
 if (mapBox) {
     const locations = JSON.parse(mapBox.dataset.locations);
     displayMap(locations)
+}
+
+
+if (singupForm) {
+    singupForm.addEventListener('submit', (e)=>{
+        e.preventDefault();
+
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const passwordConfirm = document.getElementById('passwordConfirm').value;
+
+        // const data = {
+        //     name, email, password, passwordConfirm
+        // }
+        // signup(data)
+        signup(name, email, password, passwordConfirm)
+
+    })
+    
 }
 
 // @TODO: challenge to make it more useable
