@@ -24,7 +24,7 @@ if (mapBox) {
 
 
 if (singupForm) {
-    singupForm.addEventListener('submit', async(e)=>{
+    singupForm.addEventListener('submit', (e)=>{
         e.preventDefault();
 
         const name = document.getElementById('name').value;
@@ -36,7 +36,7 @@ if (singupForm) {
         //     name, email, password, passwordConfirm
         // }
         // signup(data)
-       await signup(name, email, password, passwordConfirm)
+        signup(name, email, password, passwordConfirm)
 
     })
     
