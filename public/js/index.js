@@ -1,10 +1,10 @@
 /* eslint-disable*/
 import '@babel/polyfill';
 import { signup } from './signup';
+import { bookTour } from './stripe';
 import { updateSettings } from './updateSetting';
 import { login, logout } from './_login';
 import { displayMap } from './_mapbox';
-import { bookTour } from './_stripe';
 
 //DOM elements
 const mapBox = document.getElementById('map');
